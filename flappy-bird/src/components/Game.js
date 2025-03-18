@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { initializeGame } from '../utils/gameLogic';
 
 const Game = () => {
   const [score, setScore] = useState(0);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    // Component did mount logic
+    const canvas = canvasRef.current;
+    const cleanup = initializeGame(canvas, setScore);
+
     console.log('Game component mounted');
     return () => {
-      // Component will unmount logic
+      cleanup();
       console.log('Game component unmounted');
     };
   }, []);
@@ -16,7 +20,7 @@ const Game = () => {
     <div>
       <h1>Flappy Bird</h1>
       <p>Score: {score}</p>
-      {/* Game logic and UI here */}
+      <canvas ref={canvasRef} width="800" height="600" style={{ border: '1px solid black' }}></canvas>
     </div>
   );
 };
