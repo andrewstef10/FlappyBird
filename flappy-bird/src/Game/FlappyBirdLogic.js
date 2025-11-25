@@ -1,40 +1,20 @@
-import { GRAVITY, BIRD_WIDTH_PX, PIPE_WIDTH_PX, PIPE_GAP_PX, GAME_SPEED } from './Constants';
-import { Bird } from './FlappyBirdObjects';
+import { BIRD_WIDTH_PX } from './Constants';
+import { Bird, Pipe } from './FlappyBirdObjects';
 
 export const RunFlappyBird = (canvas, SetScore) => {
-  const GeneratePipe = () => {
-    const pipeHeight = Math.random() * (canvas.height - PIPE_GAP_PX);
-    pipes.push({
-      x: canvas.width,
-      y: 0,
-      width: PIPE_WIDTH_PX,
-      height: pipeHeight
-    });
-    pipes.push({
-      x: canvas.width,
-      y: pipeHeight + PIPE_GAP_PX,
-      width: PIPE_WIDTH_PX,
-      height: canvas.height - pipeHeight - PIPE_GAP_PX
-    });
-  };
 
   const UpdatePipes = () => {
-    pipes.forEach(pipe => {
-      pipe.x -= GAME_SPEED;
-    });
+    // Update each pipe
+    pipes.forEach(pipe => { pipe.Update(); });
 
+    // Remove pipes that have moved off screen
     pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
 
+    // Generate new pipes at intervals. Place at the right edge of the canvas.
     if (frameCount % 100 === 0) {
-      GeneratePipe();
+      let pipe = new Pipe(canvas.height, canvas.width, 0); // height, x, y
+      pipes.push(pipe);
     }
-  };
-
-  const DrawPipes = () => {
-    context.fillStyle = 'green';
-    pipes.forEach(pipe => {
-      context.fillRect(pipe.x, pipe.y, pipe.width, pipe.height);
-    });
   };
 
   const HandleKeyPress = (e) => {
@@ -57,7 +37,9 @@ export const RunFlappyBird = (canvas, SetScore) => {
 
     // Draw objects
     bird.Draw(context);
-    DrawPipes();
+    pipes.forEach(pipe => { pipe.Draw(context); });
+
+
     frameCount++;
     SetScore(Math.floor(frameCount / 100));
     requestAnimationFrame(GameLoop);

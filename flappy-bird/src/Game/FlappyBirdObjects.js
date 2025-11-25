@@ -7,7 +7,7 @@ class GameObject {
         this.horizontalVeloctiy = 0.0;
         this.verticalVelocity = 0.0;
 
-        this.SetBounds(Number.MIN_VALUE, Number.MAX_VALUE, Number.MIN_VALUE, Number.MAX_VALUE);
+        this.SetBounds(-Number.MAX_VALUE, Number.MAX_VALUE, -Number.MAX_VALUE, Number.MAX_VALUE);
         this.SetWidthHeight(width, height);
         this.SetPosition(0.0, 0.0);
     }
@@ -93,13 +93,25 @@ export class Bird extends GameObject {
     }
 }
 
-// export class Pipe extends GameObject {
-//     constructor(width, height) {
-//         super(width, height);
-//     }
+export class Pipe extends GameObject {
+    #PIPE_GAP_PX = 200.0; // vertical gap between top and bottom pipes
 
-//     draw(context) {
-//         context.fillStyle = 'green';
-//         context.fillRect(this.x, this.y, this.width, this.height);
-//     }
-// }
+    constructor(height, x, y) {
+        const PIPE_WIDTH_PX = 50.0;
+        super(PIPE_WIDTH_PX, height);
+        this.gapY = Math.random() * (height - this.#PIPE_GAP_PX); // Random gap position
+        this.SetPosition(x, y);
+    }
+
+    Update()
+    {
+        this.SetPosition(this.x - GAME_SPEED, this.y);
+    }
+
+    Draw(context)
+    {
+        context.fillStyle = 'green';
+        context.fillRect(this.x, this.y, this.width, this.gapY); // top pipe
+        context.fillRect(this.x, this.gapY + this.#PIPE_GAP_PX, this.width, this.height - this.gapY - this.#PIPE_GAP_PX); // bottom pipe
+    }
+}
