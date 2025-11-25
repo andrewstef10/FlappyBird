@@ -25,7 +25,7 @@ export const RunFlappyBird = (canvas, SetScore) => {
     pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
 
     // Generate new pipe on the first frame and at intervals. Place at the right edge of the canvas.
-    if (frameCount % PIPE_GENERATION_INTERVAL_FRAMES === 0 || frameCount === 0)
+    if (frameCount % PIPE_GENERATION_INTERVAL_FRAMES === 0)
     {
       let pipe = new Pipe(canvas.height, canvas.width, 0); // height, x, y
       pipes.push(pipe);
@@ -82,13 +82,14 @@ export const RunFlappyBird = (canvas, SetScore) => {
         console.log("Bird has collided with a pipe. Game Over.");
         gameOver = true;
       }
+
+      frameCount++;
     }
 
     // Draw objects every frame
     bird.Draw(context);
     pipes.forEach(pipe => { pipe.Draw(context); });
 
-    frameCount++;
     requestAnimationFrame(GameLoop);
   };
 

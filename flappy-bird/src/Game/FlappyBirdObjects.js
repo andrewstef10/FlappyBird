@@ -1,4 +1,4 @@
-import { GRAVITY, GAME_SPEED } from './Constants';
+import { GRAVITY, GAME_SPEED, PIPE_GAP_PX, PIPE_WIDTH_PX } from './Constants';
 import { ClampValue } from './Utils';
 
 class GameObject {
@@ -46,14 +46,18 @@ class GameObject {
     }
 
     // Returns true if the point (px, py) is within this object
-    Within(x, y)
+    Within(x, y, width, height)
     {
-        return (
-            x >= this.x &&
-            x <= this.x + this.width &&
-            y >= this.y &&
-            y <= this.y + this.height
-        );
+        // If one rectangle is to the left of the other
+        if (x + width < this.x) return false;
+        if (this.x + this.width < x) return false;
+
+        // If one rectangle is above the other
+        if (y + height < this.y) return false;
+        if (this.y + this.height < y) return false;
+
+        // Otherwise, they overlap or touch
+        return true;
     }
 
     Update()
@@ -94,12 +98,9 @@ export class Bird extends GameObject {
 }
 
 export class Pipe extends GameObject {
-    #PIPE_GAP_PX = 200.0; // vertical gap between top and bottom pipes
-
     constructor(height, x, y) {
-        const PIPE_WIDTH_PX = 50.0;
         super(PIPE_WIDTH_PX, height);
-        this.gapY = Math.random() * (height - this.#PIPE_GAP_PX); // Random gap position
+        this.gapY = Math.random() * (height - PIPE_GAP_PX); // Random gap position
         this.SetPosition(x, y);
     }
 
@@ -112,6 +113,6 @@ export class Pipe extends GameObject {
     {
         context.fillStyle = 'green';
         context.fillRect(this.x, this.y, this.width, this.gapY); // top pipe
-        context.fillRect(this.x, this.gapY + this.#PIPE_GAP_PX, this.width, this.height - this.gapY - this.#PIPE_GAP_PX); // bottom pipe
+        context.fillRect(this.x, this.gapY + PIPE_GAP_PX, this.width, this.height - this.gapY - PIPE_GAP_PX); // bottom pipe
     }
 }
