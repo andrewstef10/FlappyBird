@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { initializeGame } from '../utils/gameLogic';
+import { RunFlappyBird } from '../Game/FlappyBirdLogic';
 
 const Game = () => {
-  const [score, setScore] = useState(0);
+  const [score, SetScore] = useState(0);
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const cleanup = initializeGame(canvas, setScore);
+    const Cleanup = RunFlappyBird(canvas, SetScore);
 
     console.log('Game component mounted');
     return () => {
-      cleanup();
+      Cleanup();
       console.log('Game component unmounted');
     };
   }, []);
