@@ -27,6 +27,7 @@ export const RunFlappyBird = (canvas, SetScore) => {
     // Generate new pipe on the first frame and at intervals. Place at the right edge of the canvas.
     if (frameCount % PIPE_GENERATION_INTERVAL_FRAMES === 0)
     {
+      // height, x, y, images
       let pipe = new Pipe(canvas.height, canvas.width, 0, bottomPipeImage, topPipeImage, bottomPipeMouthImage, topPipeMouthImage); // height, x, y, image
       pipes.push(pipe);
     }

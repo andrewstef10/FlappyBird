@@ -72,7 +72,7 @@ class GameObject {
 }
 
 export class Bird extends GameObject {
-    #LYFT = -12.0; // upward velocity when the bird "flies"
+    static #LYFT = -12.0; // upward velocity when the bird "flies"
 
     constructor()
     {
@@ -93,7 +93,7 @@ export class Bird extends GameObject {
 
     Fly()
     {
-        this.verticalVelocity = this.#LYFT;
+        this.verticalVelocity = Bird.#LYFT;
     }
 }
 
