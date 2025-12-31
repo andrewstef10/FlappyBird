@@ -98,9 +98,18 @@ export class Bird extends GameObject {
 }
 
 export class Pipe extends GameObject {
-    constructor(height, x, y) {
+
+    static #PIPE_MOUTH_HEIGHT_PX = 20; // Height of the pipe top
+    static #MIN_TOP_BOTTOM_PIPE_HEIGHT_PX = Pipe.#PIPE_MOUTH_HEIGHT_PX + 10.0; // Minimum height for top and bottom pipes
+
+    constructor(height, x, y, bottomImage, topImage, bottomMouthImage, topMouthImage)
+    {
         super(PIPE_WIDTH_PX, height);
-        this.gapY = Math.random() * (height - PIPE_GAP_PX); // Random gap position
+        this.gapY = ClampValue(Math.random() * (height - PIPE_GAP_PX), Pipe.#MIN_TOP_BOTTOM_PIPE_HEIGHT_PX, height - Pipe.#MIN_TOP_BOTTOM_PIPE_HEIGHT_PX); // Random gap position
+        this.bottomImage = bottomImage;
+        this.topImage = topImage;
+        this.bottomMouthImage = bottomMouthImage;
+        this.topMouthImage = topMouthImage;
         this.SetPosition(x, y);
     }
 
@@ -111,8 +120,12 @@ export class Pipe extends GameObject {
 
     Draw(context)
     {
-        context.fillStyle = 'green';
-        context.fillRect(this.x, this.y, this.width, this.gapY); // top pipe
-        context.fillRect(this.x, this.gapY + PIPE_GAP_PX, this.width, this.height - this.gapY - PIPE_GAP_PX); // bottom pipe
+        // Draw pipes
+        context.drawImage(this.topImage, this.x, this.y, this.width, this.gapY - Pipe.#PIPE_MOUTH_HEIGHT_PX); // top pipe
+        context.drawImage(this.bottomImage, this.x, this.gapY + PIPE_GAP_PX + Pipe.#PIPE_MOUTH_HEIGHT_PX, this.width, this.height - this.gapY - PIPE_GAP_PX - Pipe.#PIPE_MOUTH_HEIGHT_PX); // bottom pipe
+
+        // Draw mouths
+        context.drawImage(this.topMouthImage, this.x, this.gapY - Pipe.#PIPE_MOUTH_HEIGHT_PX, this.width, Pipe.#PIPE_MOUTH_HEIGHT_PX); // top pipe mouth
+        context.drawImage(this.bottomMouthImage, this.x, this.gapY + PIPE_GAP_PX, this.width, Pipe.#PIPE_MOUTH_HEIGHT_PX); // top pipe mouth
     }
 }

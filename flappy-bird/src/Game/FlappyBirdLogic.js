@@ -27,7 +27,7 @@ export const RunFlappyBird = (canvas, SetScore) => {
     // Generate new pipe on the first frame and at intervals. Place at the right edge of the canvas.
     if (frameCount % PIPE_GENERATION_INTERVAL_FRAMES === 0)
     {
-      let pipe = new Pipe(canvas.height, canvas.width, 0); // height, x, y
+      let pipe = new Pipe(canvas.height, canvas.width, 0, bottomPipeImage, topPipeImage, bottomPipeMouthImage, topPipeMouthImage); // height, x, y, image
       pipes.push(pipe);
     }
   };
@@ -55,7 +55,7 @@ export const RunFlappyBird = (canvas, SetScore) => {
 
   const GameLoop = () => {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    //console.log("Game Loop + ", gameStarted);
+
     if (gameStarted && !gameOver)
     {
       // Update objects every frame
@@ -107,6 +107,26 @@ export const RunFlappyBird = (canvas, SetScore) => {
   let passedFirstPipe = false;
   let gameOver = false;
 
+  // Load pipe images to reuse for all pipes
+  let topPipeImage = new Image();
+  let bottomPipeImage = new Image();
+  let topPipeMouthImage = new Image();
+  let bottomPipeMouthImage = new Image();
+  topPipeImage.onload = () => { console.log("Successfully loaded top pipe image"); }
+  bottomPipeImage.onload = () => { console.log("Successfully loaded bottom pipe image"); }
+  topPipeMouthImage.onload = () => { console.log("Successfully loaded top pipe mouth image"); }
+  bottomPipeMouthImage.onload = () => { console.log("Successfully loaded top pipe mouth image"); }
+
+  topPipeImage.onerror = () => { console.error("Failed to load top pipe image"); }
+  bottomPipeImage.onerror = () => { console.error("Failed to load bottom pipe image"); }
+  topPipeMouthImage.onerror = () => { console.error("Failed to load top pipe mouth image"); }
+  bottomPipeMouthImage.onerror = () => { console.error("Failed to load bottom pipe mouth image"); }
+
+  topPipeImage.src = '/TopPipe.png'; // Direct path to the image in the public directory. Initiates image loading.
+  bottomPipeImage.src = '/BottomPipe.png';
+  topPipeMouthImage.src = '/TopPipeMouth.png';
+  bottomPipeMouthImage.src = '/BottomPipeMouth.png';
+
   // Set initial bird size once the image loads based on its image aspect ratio
   bird.image.onload = () =>
   {
@@ -117,8 +137,9 @@ export const RunFlappyBird = (canvas, SetScore) => {
     // positive x is right, positive y is down
     bird.SetBounds(0, canvas.width - bird.width, 0, canvas.height - bird.height);
     bird.SetPosition(50, canvas.height / 2 - (bird.height / 2));
-    console.log("Successfully to load bird image");
+    console.log("Successfully loaded bird image");
   };
+  bird.image.onerror = () =>{ console.error("Failed to load bird image") ;}
   bird.image.src = '/FlappyBird.png'; // Direct path to the bird image in the public directory. Initiates image loading.
 
 
